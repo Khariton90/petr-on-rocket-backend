@@ -9,6 +9,7 @@ import { CreateUsersDto } from './dto/create-users.dto';
 import { UsersEntity } from './entities/users.entity';
 import { LoginUsersDto } from './dto/login-users.dto';
 import { isValidObjectId } from 'mongoose';
+import { UpdateUsersDto } from './dto/update-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,7 @@ export class UsersService {
     const entity = new UsersEntity({
       nickname: dto.nickname,
       points: 0,
-      level: 0,
+      level: 1,
     });
 
     return this.usersRepository.create(entity);
@@ -80,5 +81,19 @@ export class UsersService {
 
   public async find() {
     return await this.usersRepository.find();
+  }
+
+  public async updateUser(dto: UpdateUsersDto) {
+    const entity = new UsersEntity(dto);
+    const existUser = await this.usersRepository.findById(dto.id);
+
+    if (!existUser) {
+      throw new ForbiddenException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `User with ID ${dto.id} was not found`,
+      });
+    }
+
+    return await this.usersRepository.update(dto.id, entity);
   }
 }

@@ -6,6 +6,7 @@ import { UsersRdo } from './rdo/users.rdo';
 import { LoginUsersDto } from './dto/login-users.dto';
 import { MongoIdValidationPipe } from 'src/pipes/mongo-id-validation.pipe';
 import { UsersListRdo } from './rdo/users-list.rdo';
+import { UpdateUsersDto } from './dto/update-users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -29,5 +30,10 @@ export class UsersController {
   @Get('statistic')
   async findUsers() {
     return fillObject(UsersListRdo, this.usersService.find());
+  }
+
+  @Post('update')
+  async updateUsers(@Body() dto: UpdateUsersDto) {
+    return fillObject(UsersRdo, this.usersService.updateUser(dto));
   }
 }

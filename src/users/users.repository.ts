@@ -5,9 +5,12 @@ import { UsersModel } from './users.model';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { CreateUsersDto } from './dto/create-users.dto';
+import { CRUDRepository } from '@core/core';
 
 @Injectable()
-export class UsersRepository {
+export class UsersRepository
+  implements CRUDRepository<UsersEntity, string, User>
+{
   constructor(
     @InjectModel(UsersModel.name)
     private readonly usersModel: Model<UsersModel>,
@@ -34,6 +37,19 @@ export class UsersRepository {
     return this.usersModel
       .find({}, {}, { limit: 10 })
       .sort({ points: -1 })
+      .limit(10)
       .exec();
+  }
+
+  public async update(id: string, item: UsersEntity): Promise<User> {
+    return await this.usersModel
+      .findByIdAndUpdate(id, item.toObject(), {
+        new: true,
+      })
+      .exec();
+  }
+
+  public async destroy(id: string): Promise<void> {
+    this.usersModel.deleteOne({ id });
   }
 }
