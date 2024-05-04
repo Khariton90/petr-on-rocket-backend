@@ -24,7 +24,8 @@ export class UsersService {
       level: 1,
     });
 
-    return this.usersRepository.create(entity);
+    const newUser = await this.usersRepository.create(entity);
+    return newUser;
   }
 
   public async findById(id: string) {
@@ -93,7 +94,11 @@ export class UsersService {
         message: `User with ID ${dto.id} was not found`,
       });
     }
+    const updatedUser = await this.usersRepository.update(dto.id, entity);
+    return updatedUser;
+  }
 
-    return await this.usersRepository.update(dto.id, entity);
+  public async getTotalCount() {
+    return this.usersRepository.findTotalCount();
   }
 }

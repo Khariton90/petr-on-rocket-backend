@@ -21,6 +21,10 @@ export class UsersRepository
     return user.save();
   }
 
+  public async findTotalCount() {
+    return this.usersModel.countDocuments().exec();
+  }
+
   public async findById(id: string): Promise<User> {
     return this.usersModel.findById(id).exec();
   }
@@ -32,8 +36,6 @@ export class UsersRepository
   }
 
   public async find() {
-    const count = await this.usersModel.countDocuments().exec();
-    console.log(count);
     return this.usersModel
       .find({}, {}, { limit: 10 })
       .sort({ points: -1 })

@@ -36,4 +36,9 @@ export class UsersController {
   async updateUsers(@Body() dto: UpdateUsersDto) {
     return fillObject(UsersRdo, this.usersService.updateUser(dto));
   }
+
+  @Get('total')
+  async totalCount() {
+    return this.usersService.getTotalCount();
+  }
 }
