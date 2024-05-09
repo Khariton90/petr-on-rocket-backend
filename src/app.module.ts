@@ -8,6 +8,7 @@ import { getMongoDbConfig } from './config/mongodb.config';
 import mongoDbOptions from './config/db.config';
 import envSchema from './env.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forRootAsync(getMongoDbConfig()),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}
