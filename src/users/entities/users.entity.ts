@@ -12,7 +12,7 @@ export class UsersEntity implements User {
 
   public fillEntity(user: User) {
     this._id = user._id;
-    this.nickname = user.nickname;
+    this.nickname = user.nickname.toLowerCase();
     this.points = user.points;
     this.level = user.level;
   }

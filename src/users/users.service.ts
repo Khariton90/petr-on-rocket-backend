@@ -70,7 +70,7 @@ export class UsersService {
       });
     }
 
-    if (existUser.nickname !== dto.nickname) {
+    if (existUser.nickname.toLowerCase() !== dto.nickname.toLowerCase()) {
       throw new ForbiddenException({
         statusCode: HttpStatus.FORBIDDEN,
         message: `Incorrect nickname`,
