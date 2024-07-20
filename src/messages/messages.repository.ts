@@ -5,8 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MessagesModel } from './messages.model';
 import { Model } from 'mongoose';
-
-const MESSAGES_LIMIT = 4;
+import { MessageQuery } from 'src/chat/query/message.query';
+import { DEFAULT_MESSAGE_LIMIT } from './messages.constants';
 
 @Injectable()
 export class MessagesRepository
@@ -21,8 +21,10 @@ export class MessagesRepository
     return message.save();
   }
 
-  public find() {
-    return this.messagesModel.find().limit(MESSAGES_LIMIT);
+  public find(query: MessageQuery) {
+    const skip = query.page ? query.page : 1;
+    const limit = query.limit ? query.limit : DEFAULT_MESSAGE_LIMIT;
+    return this.messagesModel.find().limit(limit).skip(skip).exec();
   }
 
   public findById(id: string): Promise<Message> {
