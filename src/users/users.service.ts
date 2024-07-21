@@ -85,6 +85,8 @@ export class UsersService {
   }
 
   public async updateUser(dto: UpdateUsersDto) {
+    await this.findByNickname(dto);
+
     const entity = new UsersEntity(dto);
     const existUser = await this.usersRepository.findById(dto.id);
 
@@ -92,6 +94,13 @@ export class UsersService {
       throw new ForbiddenException({
         statusCode: HttpStatus.NOT_FOUND,
         message: `User with ID ${dto.id} was not found`,
+      });
+    }
+
+    if (existUser.nickname.toLowerCase() === dto.nickname.toLowerCase()) {
+      throw new ForbiddenException({
+        statusCode: HttpStatus.FORBIDDEN,
+        message: `Incorrect nickname`,
       });
     }
     const updatedUser = await this.usersRepository.update(dto.id, entity);
