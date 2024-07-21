@@ -22,9 +22,14 @@ export class MessagesRepository
   }
 
   public find(query: MessageQuery) {
-    const skip = query.page ? query.page : 1;
+    const skip = query.page ? query.page * DEFAULT_MESSAGE_LIMIT : 0;
     const limit = query.limit ? query.limit : DEFAULT_MESSAGE_LIMIT;
-    return this.messagesModel.find().limit(limit).skip(skip).exec();
+    return this.messagesModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip)
+      .exec();
   }
 
   public findById(id: string): Promise<Message> {

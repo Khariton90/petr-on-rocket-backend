@@ -6,6 +6,8 @@ import {
 } from '@nestjs/websockets';
 import { MessageDto } from './dto/message.dto';
 import { MessagesService } from 'src/messages/messages.service';
+import { fillObject } from '@core/core';
+import { MessageRdo } from './rdo/message.rdo';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -15,8 +17,12 @@ export class ChatGateway {
   server: any;
 
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() message: MessageDto): void {
-    this.messagesService.createMessage(message);
-    this.server.emit('message', message);
+  async handleMessage(@MessageBody() message: MessageDto): Promise<void> {
+    const newMessage = fillObject(
+      MessageRdo,
+      await this.messagesService.createMessage(message),
+    );
+
+    this.server.emit('message', newMessage);
   }
 }
