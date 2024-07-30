@@ -7,6 +7,7 @@ import { LoginUsersDto } from './dto/login-users.dto';
 import { MongoIdValidationPipe } from 'src/pipes/mongo-id-validation.pipe';
 import { UsersListRdo } from './rdo/users-list.rdo';
 import { UpdateUsersDto } from './dto/update-users.dto';
+import { UserLevelDto } from './dto/user-level.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,6 +36,11 @@ export class UsersController {
   @Post('update')
   async updateUsers(@Body() dto: UpdateUsersDto) {
     return fillObject(UsersRdo, this.usersService.updateUser(dto));
+  }
+
+  @Post('update-level')
+  async updateLevel(@Body() dto: UserLevelDto) {
+    return fillObject(UsersRdo, this.usersService.updateLevel(dto));
   }
 
   @Get('total')

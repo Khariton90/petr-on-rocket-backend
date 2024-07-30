@@ -10,6 +10,7 @@ import { UsersEntity } from './entities/users.entity';
 import { LoginUsersDto } from './dto/login-users.dto';
 import { isValidObjectId } from 'mongoose';
 import { UpdateUsersDto } from './dto/update-users.dto';
+import { UserLevelDto } from './dto/user-level.dto';
 
 @Injectable()
 export class UsersService {
@@ -85,9 +86,6 @@ export class UsersService {
   }
 
   public async updateUser(dto: UpdateUsersDto) {
-    await this.findByNickname(dto);
-
-    const entity = new UsersEntity(dto);
     const existUser = await this.usersRepository.findById(dto.id);
 
     if (!existUser) {
@@ -97,12 +95,26 @@ export class UsersService {
       });
     }
 
-    if (existUser.nickname.toLowerCase() === dto.nickname.toLowerCase()) {
+    const entity = new UsersEntity({
+      ...dto,
+      level: existUser.level,
+      points: existUser.points,
+    });
+
+    const updatedUser = await this.usersRepository.update(dto.id, entity);
+    return updatedUser;
+  }
+
+  public async updateLevel(dto: UserLevelDto) {
+    const existUser = await this.usersRepository.findById(dto.id);
+
+    if (!existUser) {
       throw new ForbiddenException({
-        statusCode: HttpStatus.FORBIDDEN,
-        message: `Incorrect nickname`,
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `User with ID ${dto.id} was not found`,
       });
     }
+    const entity = new UsersEntity({ ...dto, nickname: existUser.nickname });
     const updatedUser = await this.usersRepository.update(dto.id, entity);
     return updatedUser;
   }

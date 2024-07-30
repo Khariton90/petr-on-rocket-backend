@@ -1,9 +1,12 @@
 import { Expose } from 'class-transformer';
 
-export class UpdateUsersDto {
+export class UserLevelDto {
   @Expose()
   public id: string;
 
   @Expose()
-  public nickname: string;
+  public points: number;
+
+  @Expose()
+  public level: number;
 }
